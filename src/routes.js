@@ -5,6 +5,7 @@ import Login from './pages/Login';
 import Users from './pages/Users';
 import Board from './pages/Board';
 import Task from './pages/Task';
+import EditTask from './pages/EditTask';
 import Planning from './pages/Planning';
 
 
@@ -27,9 +28,10 @@ export default function Routes() {
     <Switch>
       <CustomRoute exact path="/login" component={Login} />
       <CustomRoute isPrivate exact path="/users" component={Users} />
-      <CustomRoute exact path="/board" component={Board} />
-      <CustomRoute exact path="/task" component={Task} />
-      <CustomRoute exact path="/planning" component={Planning} />
+      <CustomRoute isPrivate exact path="/board" component={Board} />
+      <CustomRoute isPrivate exact path="/task" component={Task} />
+      <CustomRoute isPrivate exact path="/task/:id" component={EditTask} />
+      <CustomRoute isPrivate exact path="/planning" component={Planning} />
     </Switch>
   );
 }

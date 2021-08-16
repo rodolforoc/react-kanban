@@ -1,19 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Button } from '@material-ui/core';
 import { v4 as uuid } from 'uuid';
+import api from '../services/api';
+import history from '../history';
+import { Context } from '../Context/AuthContext';
 
 const itemsFromBackend = [
-  { id: uuid(), content: "First task" },
-  { id: uuid(), content: "Second task" },
-  { id: uuid(), content: "Third task" },
-  { id: uuid(), content: "Fourth task" },
-  { id: uuid(), content: "Fifth task" }
+  { id: uuid(), titulo: "First task" },
+  { id: uuid(), titulo: "Second task" },
+  { id: uuid(), titulo: "Third task" },
+  { id: uuid(), titulo: "Fourth task" },
+  { id: uuid(), titulo: "Fifth task" }
 ];
 
 const columnsFromBackend = {
   [uuid()]: {
-    name: "Requested",
+    name: "BackLog",
     items: itemsFromBackend
   },
   [uuid()]: {
@@ -68,7 +71,20 @@ const onDragEnd = (result, columns, setColumns) => {
 };
 
 export default function Board() {
-  const [columns, setColumns] = useState(columnsFromBackend)
+  const { handleLogout } = useContext(Context);
+  const [columns, setColumns] = useState(columnsFromBackend);
+  const [tasks, setTasks] = useState([]);
+
+  useEffect(() => {
+   async function loadTasks() {
+      const response = await api.get('/assignment');
+      console.log(response.data);
+      setTasks(response.data); 
+    }
+    
+    loadTasks();
+  }, []);
+
 
   return (
     <div>
@@ -77,8 +93,33 @@ export default function Board() {
         fullWidth
         variant="contained"
         color="primary"
+        style={{
+          marginBottom: '15px'
+        }}
+        onClick={() => history.push('/task')}
       >
         Adicionar nova tarefa
+      </Button>
+      <Button
+        type="submit"
+        fullWidth
+        variant="contained"
+        color="primary"
+        style={{
+          marginBottom: '15px'
+        }}
+        onClick={() => history.push('/planning')}
+      >
+        Ir pra Planning
+      </Button>
+      <Button
+        type="submit"
+        fullWidth
+        variant="contained"
+        color="secondary"
+        onClick={handleLogout}
+      >
+        Sair
       </Button>
       <div style={{ display: "flex", justifyContent: "center", height: "100%" }}>
         <DragDropContext
@@ -135,8 +176,9 @@ export default function Board() {
                                         color: "white",
                                         ...provided.draggableProps.style
                                       }}
+                                      onDoubleClick={() => history.push(`/task/${item.id}`)}
                                     >
-                                      {item.content}
+                                      {item.titulo}
                                     </div>
                                   );
                                 }}

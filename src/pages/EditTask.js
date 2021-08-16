@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Avatar from '@material-ui/core/Avatar';
-import AddBox from '@material-ui/icons/AddBox';
+import Edit from '@material-ui/icons/Edit';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { makeStyles } from '@material-ui/core/styles';
+import { useParams } from 'react-router';
 
 import api from '../services/api';
-import history from '../history';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -31,70 +31,32 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Task() {
+export default function EditTask() {
   const classes = useStyles();
-  const [titulo, setTitulo] = useState('');
-  const [descricao, setDescricao] = useState('');
-  const [complexidade, setComplexidade] = useState(1);
-  const [dev, setDev] = useState('');
-  const [responsavel, setResponsavel] = useState('');
-  const [dtInicio, setDtInicio] = useState('');
-  const [dtFim, setDtFim] = useState('');
+  const [task, setTask] = useState({});
+  let { id } = useParams();
 
-  function handleChangeTitulo(event) {
-    setTitulo(event.target.value);
-  }
-
-  function handleChangeDescricao(event) {
-    setDescricao(event.target.value);
-  }
-
-  function handleChangeComplexidade(event) {
-    setComplexidade(event.target.value);
-  }
-
-  function handleChangeDev(event) {
-    setDev(event.target.value);
-  }
-
-  function handleChangeResponsavel(event) {
-    setResponsavel(event.target.value);
-
-  }
-
-  function handleChangeDtInicio(event) {
-    setDtInicio(event.target.value);
-  }
-
-  function handleChangeDtFim(event) {
-    setDtFim(event.target.value);
-  }
-
-  function handleNewTask() {
-
-    let payload = {
-      "titulo":  titulo,
-      "descricao": descricao,
-      "complexidade": parseInt(complexidade),
-      "responsavel": parseInt(responsavel),
-      "desenvolvedor": parseInt(dev),
-      "dataInicio": dtInicio,
-      "dtTermino": dtFim
+  useEffect(() => {
+    async function loadTask() {
+      const response = await api.get(`/assignment/id`, { data: {
+        param: 10
+      }});
+      console.log(response.data);
+      setTask(response.data);
     }
-
-    api.post('/assignment', payload);
-    history.push('/board');
-  }
+    
+    loadTask();
+  }, [])
 
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
-          <AddBox />
+          <Edit />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Adicionar nova Tarefa
+          Editar Tarefa
         </Typography>
         <div className={classes.form}>
           <TextField 
@@ -106,7 +68,6 @@ export default function Task() {
             label="Título"
             name="titulo"
             autoFocus
-            onChange={handleChangeTitulo}
           />
           <TextField
             variant="outlined"
@@ -117,7 +78,6 @@ export default function Task() {
             placeholder="Descricao"
             multiline
             rows={4}
-            onChange={handleChangeDescricao}
           />
           <TextField
             variant="outlined"
@@ -126,7 +86,6 @@ export default function Task() {
             name="complexidade"
             label="Complexidade"
             id="complexidade"
-            onChange={handleChangeComplexidade}
           />
           <TextField
             variant="outlined"
@@ -136,17 +95,6 @@ export default function Task() {
             name="desenvolvedor"
             label="Desenvolvedor"
             id="desenvolvedor"
-            onChange={handleChangeDev}
-          />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="responsavel"
-            label="Responsavel"
-            id="responsavel"
-            onChange={handleChangeResponsavel}
           />
           <TextField
             id="date"
@@ -160,7 +108,6 @@ export default function Task() {
             style={{
                 marginRight: 30
             }}
-            onChange={handleChangeDtInicio}
           />
           <TextField
             id="date"
@@ -171,7 +118,6 @@ export default function Task() {
             InputLabelProps={{
               shrink: true,
             }}
-            onChange={handleChangeDtFim}
           />
           <Button
             type="submit"
@@ -179,9 +125,8 @@ export default function Task() {
             variant="contained"
             color="primary"
             className={classes.submit}
-            onClick={handleNewTask}
           >
-            Adicionar
+            Editar
           </Button>
         </div>
       </div>
