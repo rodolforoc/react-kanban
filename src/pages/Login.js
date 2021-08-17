@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
@@ -32,9 +32,17 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Login() {
   const classes = useStyles();
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const { authenticated, handleLogin } = useContext(Context);
 
-  console.log(authenticated);
+  function handleChangeUsername(event) {
+    setUsername(event.target.value);
+  }
+
+  function handleChangePassword(event) {
+    setPassword(event.target.value);
+  }
 
   return (
     <Container component="main" maxWidth="xs">
@@ -57,6 +65,7 @@ export default function Login() {
             name="username"
             autoComplete="username"
             autoFocus
+            onChange={handleChangeUsername}
           />
           <TextField
             variant="outlined"
@@ -68,6 +77,7 @@ export default function Login() {
             type="password"
             id="password"
             autoComplete="current-password"
+            onChange={handleChangePassword}
           />
           <Button
             type="submit"
@@ -75,7 +85,7 @@ export default function Login() {
             variant="contained"
             color="primary"
             className={classes.submit}
-            onClick={handleLogin}
+            onClick={() => handleLogin(username, password)}
           >
             Entrar
           </Button>

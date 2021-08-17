@@ -19,16 +19,16 @@ function AuthProvider({ children }) {
     setLoading(false);
   });
   
-  async function handleLogin() {
-    const response = await api.post('/login', {
-      "username":"admin",
-	    "password":"admin123"
+  async function handleLogin(username, password) {
+    await api.post('/login', {
+      "username": username,
+	    "password": password
     }).then(function (response) {
       const token = response.data;
       localStorage.setItem('token', JSON.stringify(token));
       api.defaults.headers.Authorization = `Bearer ${token}`;
       setAuthenticated(true);
-      history.push('/users');
+      history.push('/board');
     })
 
     setLoading(false)
@@ -38,7 +38,7 @@ function AuthProvider({ children }) {
     setAuthenticated(false);
     localStorage.removeItem('token');
     api.defaults.headers.Authorization = undefined;
-    history.push('/login');
+    history.push('/');
   }
 
   return (

@@ -38,8 +38,8 @@ export default function Task() {
   const [complexidade, setComplexidade] = useState(1);
   const [dev, setDev] = useState('');
   const [responsavel, setResponsavel] = useState('');
-  const [dtInicio, setDtInicio] = useState('');
-  const [dtFim, setDtFim] = useState('');
+  const [dtInicio, setDtInicio] = useState('2017-05-24');
+  const [dtFim, setDtFim] = useState('2017-05-24');
 
   function handleChangeTitulo(event) {
     setTitulo(event.target.value);
@@ -79,7 +79,7 @@ export default function Task() {
       "responsavel": parseInt(responsavel),
       "desenvolvedor": parseInt(dev),
       "dataInicio": dtInicio,
-      "dtTermino": dtFim
+      "dataTermino": dtFim
     }
 
     api.post('/assignment', payload);
@@ -87,104 +87,117 @@ export default function Task() {
   }
 
   return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
-      <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <AddBox />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Adicionar nova Tarefa
-        </Typography>
-        <div className={classes.form}>
-          <TextField 
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="titulo"
-            label="Título"
-            name="titulo"
-            autoFocus
-            onChange={handleChangeTitulo}
-          />
-          <TextField
-            variant="outlined"
-            id="outlined-textarea"
-            fullWidth
-            required
-            label="Descrição"
-            placeholder="Descricao"
-            multiline
-            rows={4}
-            onChange={handleChangeDescricao}
-          />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            name="complexidade"
-            label="Complexidade"
-            id="complexidade"
-            onChange={handleChangeComplexidade}
-          />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="desenvolvedor"
-            label="Desenvolvedor"
-            id="desenvolvedor"
-            onChange={handleChangeDev}
-          />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="responsavel"
-            label="Responsavel"
-            id="responsavel"
-            onChange={handleChangeResponsavel}
-          />
-          <TextField
-            id="date"
-            label="Data Início"
-            type="date"
-            defaultValue="2017-05-24"
-            className={classes.textField}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            style={{
-                marginRight: 30
-            }}
-            onChange={handleChangeDtInicio}
-          />
-          <TextField
-            id="date"
-            label="Data Término"
-            type="date"
-            defaultValue="2017-05-24"
-            className={classes.textField}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            onChange={handleChangeDtFim}
-          />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-            onClick={handleNewTask}
-          >
-            Adicionar
-          </Button>
+    <div>
+      <Button
+        type="submit"
+        fullWidth
+        variant="contained"
+        color="primary"
+        style={{
+          marginBottom: '15px'
+        }}
+        onClick={() => history.push('/board')} >
+        Voltar ao board
+      </Button>
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <div className={classes.paper}>
+          <Avatar className={classes.avatar}>
+            <AddBox />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Adicionar nova Tarefa
+          </Typography>
+          <div className={classes.form}>
+            <TextField 
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              id="titulo"
+              label="Título"
+              name="titulo"
+              autoFocus
+              onChange={handleChangeTitulo}
+            />
+            <TextField
+              variant="outlined"
+              id="outlined-textarea"
+              fullWidth
+              required
+              label="Descrição"
+              placeholder="Descricao"
+              multiline
+              rows={4}
+              onChange={handleChangeDescricao}
+            />
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              name="complexidade"
+              label="Complexidade"
+              id="complexidade"
+              onChange={handleChangeComplexidade}
+            />
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              name="desenvolvedor"
+              label="Desenvolvedor"
+              id="desenvolvedor"
+              onChange={handleChangeDev}
+            />
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              name="responsavel"
+              label="Responsavel"
+              id="responsavel"
+              onChange={handleChangeResponsavel}
+            />
+            <TextField
+              id="date"
+              label="Data Início"
+              type="date"
+              defaultValue="2017-05-24"
+              className={classes.textField}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              style={{
+                  marginRight: 30
+              }}
+              onChange={handleChangeDtInicio}
+            />
+            <TextField
+              id="date"
+              label="Data Término"
+              type="date"
+              defaultValue="2017-05-24"
+              className={classes.textField}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              onChange={handleChangeDtFim}
+            />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+              onClick={handleNewTask}
+            >
+              Adicionar
+            </Button>
+          </div>
         </div>
-      </div>
-    </Container>
+      </Container>
+    </div>
   );
 }
