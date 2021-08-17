@@ -19,9 +19,7 @@ export default function Users() {
         "desenvolvedor":2,
         "dataInicio":"2021-08-07",
         "dataTermino":"2021-09-03"
-      }).then(function(response) {
-        console.log(response)
-      });
+      })
 
       setUsers(data);
     })();

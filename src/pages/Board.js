@@ -6,33 +6,6 @@ import api from '../services/api';
 import history from '../history';
 import { Context } from '../Context/AuthContext';
 
-const itemsFromBackend = [
-  { id: uuid(), titulo: "First task" },
-  { id: uuid(), titulo: "Second task" },
-  { id: uuid(), titulo: "Third task" },
-  { id: uuid(), titulo: "Fourth task" },
-  { id: uuid(), titulo: "Fifth task" }
-];
-
-const columnsFromBackend = {
-  [uuid()]: {
-    name: "BackLog",
-    items: itemsFromBackend
-  },
-  [uuid()]: {
-    name: "To do",
-    items: []
-  },
-  [uuid()]: {
-    name: "In Progress",
-    items: []
-  },
-  [uuid()]: {
-    name: "Done",
-    items: []
-  }
-};
-
 const onDragEnd = (result, columns, setColumns) => {
   if (!result.destination) return;
   const { source, destination } = result;
@@ -72,18 +45,55 @@ const onDragEnd = (result, columns, setColumns) => {
 
 export default function Board() {
   const { handleLogout } = useContext(Context);
-  const [columns, setColumns] = useState(columnsFromBackend);
+  const [columns, setColumns] = useState([]);
   const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
-   async function loadTasks() {
+    async function loadTasks() {
       const response = await api.get('/assignment');
-      console.log(response.data);
-      setTasks(response.data); 
+      
+      const tasks = response.data;
+      setTasks(tasks);
+      
+      const backlogColTasks = buildBacklogCol(tasks);
+      setColumns(buildColumns(backlogColTasks));
+  
     }
-    
+
     loadTasks();
   }, []);
+
+  function buildBacklogCol(oTasks) {
+    let res = [];
+    oTasks.forEach(obj => {
+      res.push({
+        id: obj.id,
+        titulo: obj.titulo
+      });
+    });
+    return res;
+  }
+
+  function buildColumns(aBacklogTasks) {
+    return {
+      [uuid()]: {
+        name: "BackLog",
+        items: aBacklogTasks
+      },
+      [uuid()]: {
+        name: "To do",
+        items: []
+      },
+      [uuid()]: {
+        name: "In Progress",
+        items: []
+      },
+      [uuid()]: {
+        name: "Done",
+        items: []
+      }
+    };
+  }
 
 
   return (
@@ -156,7 +166,7 @@ export default function Board() {
                             return (
                               <Draggable
                                 key={item.id}
-                                draggableId={item.id}
+                                draggableId={(item.id).toString()}
                                 index={index}
                               >
                                 {(provided, snapshot) => {

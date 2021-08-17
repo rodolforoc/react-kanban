@@ -10,6 +10,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { useParams } from 'react-router';
 
 import api from '../services/api';
+import history from '../history';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -32,104 +33,199 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function EditTask() {
-  const classes = useStyles();
-  const [task, setTask] = useState({});
   let { id } = useParams();
+  const classes = useStyles();
+  const [idTask, setIdTask] = useState(0);
+  const [titulo, setTitulo] = useState('');
+  const [descricao, setDescricao] = useState('');
+  const [complexidade, setComplexidade] = useState(1);
+  const [dev, setDev] = useState('');
+  const [responsavel, setResponsavel] = useState('');
+  const [dtInicio, setDtInicio] = useState('');
+  const [dtFim, setDtFim] = useState('');
 
   useEffect(() => {
     async function loadTask() {
-      const response = await api.get(`/assignment/id`, { data: {
-        param: 10
-      }});
-      console.log(response.data);
-      setTask(response.data);
+      const response = await api.get(`/assignment/${id}`);
+      const taskResponse = response.data;
+      
+      setIdTask(taskResponse.id);
+      setTitulo(taskResponse.titulo);
+      setDescricao(taskResponse.descricao);
+      setComplexidade(taskResponse.complexidade);
+      setDev(taskResponse.desenvolvedor);
+      setResponsavel(taskResponse.responsavel);
+      setDtInicio(taskResponse.dataInicio);
+      setDtFim(taskResponse.dataTermino);
     }
     
     loadTask();
-  }, [])
+  }, []);
+
+  function handleChangeTitulo(event) {
+    setTitulo(event.target.value);
+  }
+
+  function handleChangeDescricao(event) {
+    setDescricao(event.target.value);
+  }
+
+  function handleChangeDev(event) {
+    setDev(event.target.value);
+  }
+
+  function handleChangeResponsavel(event) {
+    setResponsavel(event.target.value);
+
+  }
+
+  function handleChangeDtInicio(event) {
+    setDtInicio(event.target.value);
+  }
+
+  function handleChangeDtFim(event) {
+    setDtFim(event.target.value);
+  }
+
+  function handleUpdateTask() {
+    let payload = {
+      "id": idTask,
+      "titulo": titulo,
+      "descricao": descricao,
+      "complexidade": complexidade,
+      "responsavel": responsavel,
+      "desenvolvedor": dev,
+      "dataInicio": dtInicio,
+      "dataTermino": dtFim
+    }
+
+    function goBack() {
+      history.replace('/board');
+    }
+
+    api.patch('/assignment', payload);
+    setTimeout(goBack, 1500);
+  }
 
   return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
-      <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <Edit />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Editar Tarefa
-        </Typography>
-        <div className={classes.form}>
-          <TextField 
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="titulo"
-            label="Título"
-            name="titulo"
-            autoFocus
-          />
-          <TextField
-            variant="outlined"
-            id="outlined-textarea"
-            fullWidth
-            required
-            label="Descrição"
-            placeholder="Descricao"
-            multiline
-            rows={4}
-          />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            name="complexidade"
-            label="Complexidade"
-            id="complexidade"
-          />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="desenvolvedor"
-            label="Desenvolvedor"
-            id="desenvolvedor"
-          />
-          <TextField
-            id="date"
-            label="Data Início"
-            type="date"
-            defaultValue="2017-05-24"
-            className={classes.textField}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            style={{
-                marginRight: 30
-            }}
-          />
-          <TextField
-            id="date"
-            label="Data Término"
-            type="date"
-            defaultValue="2017-05-24"
-            className={classes.textField}
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-          >
-            Editar
-          </Button>
+    <div>
+      <Button
+        type="submit"
+        fullWidth
+        variant="contained"
+        color="primary"
+        style={{
+          marginBottom: '15px'
+        }}
+        onClick={() => history.push('/board')} >
+        Voltar ao board
+      </Button>
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <div className={classes.paper}>
+          <Avatar className={classes.avatar}>
+            <Edit />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Editar Tarefa
+          </Typography>
+          <div className={classes.form}>
+            <TextField 
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              id="titulo"
+              label="Título"
+              name="titulo"
+              autoFocus
+              value={titulo}
+              onChange={handleChangeTitulo}
+            />
+            <TextField
+              variant="outlined"
+              id="outlined-textarea"
+              fullWidth
+              required
+              label="Descrição"
+              placeholder="Descricao"
+              multiline
+              rows={4}
+              value={descricao}
+              onChange={handleChangeDescricao}
+            />
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              name="complexidade"
+              label="Complexidade"
+              id="complexidade"
+              value={complexidade}
+              inputProps={
+                { readOnly: true, }
+              }
+            />
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              name="desenvolvedor"
+              label="Desenvolvedor"
+              id="desenvolvedor"
+              value={dev}
+              onChange={handleChangeDev}
+            />
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              name="responsavel"
+              label="Responsavel"
+              id="responsavel"
+              value={responsavel}
+              onChange={handleChangeResponsavel}
+            />
+            <TextField
+              id="date"
+              label="Data Início"
+              type="date"
+              className={classes.textField}
+              value={dtInicio}
+              onChange={handleChangeDtInicio}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              style={{
+                  marginRight: 30
+              }}
+            />
+            <TextField
+              id="date"
+              label="Data Término"
+              type="date"
+              className={classes.textField}
+              value={dtFim}
+              onChange={handleChangeDtFim}
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+              onClick={handleUpdateTask}
+            >
+              Editar
+            </Button>
+          </div>
         </div>
-      </div>
-    </Container>
+      </Container>
+    </div>
   );
 }
